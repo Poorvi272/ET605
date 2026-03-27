@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ITS - Perimeter & Area</title>
+  <style>
+    body { font-family: Arial; padding: 30px; background: #f5f7fb; }
+    .card { background: white; padding: 20px; border-radius: 10px; width: 500px; margin: auto; }
+    button { margin: 8px; padding: 8px 12px; }
+    .hidden { display: none; }
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2>Perimeter & Area ITS</h2>
+  <p id="kc"></p>
+  <h3 id="question"></h3>
+  <div id="options"></div>
+
+  <button onclick="submitAnswer()">Submit</button>
+  <button onclick="showHint()">Hint</button>
+
+  <p id="hint"></p>
+  <p id="feedback"></p>
+</div>
+
+<div id="result" class="card hidden">
+  <h2>Session Summary</h2>
+  <p id="summary"></p>
+</div>
+
+<script>
+
+// =====================
+// QUESTION BANK (NCERT + ITS DESIGN)
+// =====================
+const questions = [
+
+  // KC-1 (Concept) — NCERT definition
+  {
+    kc: "KC-1: Perimeter Concept",
+    question: "Perimeter of a closed figure means:",
+    options: ["Area covered", "Boundary length", "Volume", "Height"],
+    correct: "Boundary length",
+    hints: [
+      "Think of walking around a field",
+      "It is about outer boundary",
+      "Total distance around shape"
+    ]
+  },
+
+  // KC-5 (Area concept)
+  {
+    kc: "KC-5: Area Concept",
+    question: "Area of a figure means:",
+    options: ["Boundary", "Surface covered", "Length", "Sides"],
+    correct: "Surface covered",
+    hints: [
+      "Think of tiles on floor",
+      "Inside space",
+      "Measured in square units"
+    ]
+  },
+
+  // KC-3 (Square perimeter)
+  {
+    kc: "KC-3: Square Perimeter",
+    question: "A square has side 5 cm. Find its perimeter.",
+    options: ["20 cm", "10 cm", "25 cm", "15 cm"],
+    correct: "20 cm",
+    hints: [
+      "Square has 4 equal sides",
+      "Add all sides",
+      "4 × 5 = 20"
+    ]
+  },
+
+  // KC-6 (Rectangle area)
+  {
+    kc: "KC-6: Rectangle Area",
+    question: "A rectangle is 8 m long and 3 m wide. Find its area.",
+    options: ["24 m²", "11 m", "24 m", "22 m²"],
+    correct: "24 m²",
+    hints: [
+      "Area = length × breadth",
+      "Multiply both",
+      "8 × 3 = 24"
+    ]
+  },
+
+  // KC-4 (Triangle perimeter)
+  {
+    kc: "KC-4: Triangle Perimeter",
+    question: "Triangle sides are 6 cm, 8 cm, and 10 cm. Find perimeter.",
+    options: ["24 cm", "48 cm", "14 cm", "80 cm"],
+    correct: "24 cm",
+    hints: [
+      "Add all sides",
+      "6 + 8 + 10",
+      "Total = 24"
+    ]
+  },
+
+  // KC-7 (Triangle area — from NCERT concept)
+  {
+    kc: "KC-7: Triangle Area",
+    question: "Triangle base = 12 cm, height = 5 cm. Find area.",
+    options: ["30 cm²", "60 cm²", "17 cm²", "34 cm²"],
+    correct: "30 cm²",
+    hints: [
+      "Triangle is half of rectangle",
+      "Use 1/2 × base × height",
+      "1/2 × 12 × 5 = 30"
+    ]
+  },
+
+  // KC-2 (Reverse perimeter — NCERT Exemplar)
+  {
+    kc: "KC-2: Rectangle Perimeter Reverse",
+    question: "Rectangle perimeter = 36 m, width = 7 m. Find length.",
+    options: ["11 m", "29 m", "22 m", "5 m"],
+    correct: "11 m",
+    hints: [
+      "P = 2(l + w)",
+      "36/2 = 18",
+      "18 - 7 = 11"
+    ]
+  },
+
+  // KC-8 (Perimeter vs Area — NCERT True/False)
+  {
+    kc: "KC-8: Perimeter vs Area",
+    question: "A painter paints a wall. What is needed?",
+    options: ["Area", "Perimeter", "Volume", "Length"],
+    correct: "Area",
+    hints: [
+      "Painting covers surface",
+      "Surface = area",
+      "Fencing = perimeter"
+    ]
+  },
+
+  // KC-9 (Word problem — NCERT Example 4)
+  {
+    kc: "KC-9: Word Problem",
+    question: "Field 25m × 15m. Fencing cost = ₹40/m. Find total cost.",
+    options: ["₹3200", "₹1500", "₹6000", "₹800"],
+    correct: "₹3200",
+    hints: [
+      "Find perimeter first",
+      "2(25+15)=80",
+      "80 × 40 = 3200"
+    ]
+  },
+
+  // KC-10 (Reverse area)
+  {
+    kc: "KC-10: Missing Dimension",
+    question: "Area of square = 64 cm². Find side.",
+    options: ["8 cm", "16 cm", "32 cm", "4 cm"],
+    correct: "8 cm",
+    hints: [
+      "Area = side × side",
+      "Find square root",
+      "√64 = 8"
+    ]
+  }
+
+];
+
+// =====================
+// STATE (Learner Model simplified)
+// =====================
+let current = 0;
+let selected = null;
+let hintLevel = 0;
+
+let correct = 0;
+let wrong = 0;
+let hintsUsed = 0;
+let streakWrong = 0;
+
+let startTime = Date.now();
+
+// =====================
+// LOAD QUESTION (System Flow)
+// =====================
+function loadQuestion() {
+  let q = questions[current];
+
+  document.getElementById("kc").innerText = q.kc;
+  document.getElementById("question").innerText = q.question;
+
+  let optionsHTML = "";
+  q.options.forEach(opt => {
+    optionsHTML += `<div>
+      <input type="radio" name="opt" value="${opt}" onclick="selected='${opt}'"> ${opt}
+    </div>`;
+  });
+
+  document.getElementById("options").innerHTML = optionsHTML;
+  document.getElementById("hint").innerText = "";
+  document.getElementById("feedback").innerText = "";
+
+  hintLevel = 0;
+  selected = null;
+}
+
+// =====================
+// SUBMIT ANSWER (Pedagogical Logic)
+// =====================
+function submitAnswer() {
+  if (!selected) return alert("Select an option");
+
+  let q = questions[current];
+
+  if (selected === q.correct) {
+    correct++;
+    streakWrong = 0;
+    document.getElementById("feedback").innerText = "✅ Correct!";
+    nextQuestion();
+  } else {
+    wrong++;
+    streakWrong++;
+    document.getElementById("feedback").innerText = "❌ Wrong!";
+    
+    if (streakWrong >= 2) {
+      document.getElementById("hint").innerText = "🔁 Remedial: Revisit concept!";
+    }
+  }
+}
+
+// =====================
+// HINT SYSTEM (3 LEVEL)
+// =====================
+function showHint() {
+  let q = questions[current];
+
+  if (hintLevel < q.hints.length) {
+    document.getElementById("hint").innerText = q.hints[hintLevel];
+    hintLevel++;
+    hintsUsed++;
+  } else {
+    document.getElementById("hint").innerText = "No more hints!";
+  }
+}
+
+// =====================
+// NEXT QUESTION
+// =====================
+function nextQuestion() {
+  current++;
+
+  if (current < questions.length) {
+    setTimeout(loadQuestion, 500);
+  } else {
+    endSession();
+  }
+}
+
+// =====================
+// END SESSION (FINAL PAYLOAD)
+// =====================
+function endSession() {
+  let time = Math.floor((Date.now() - startTime)/1000);
+
+  document.querySelector(".card").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("summary").innerText = `
+Correct: ${correct}
+Wrong: ${wrong}
+Hints Used: ${hintsUsed}
+Time: ${time}s
+Accuracy: ${(correct/(correct+wrong)).toFixed(2)}
+`;
+}
+
+// =====================
+loadQuestion();
+// =====================
+
+</script>
+
+</body>
+</html>
