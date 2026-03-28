@@ -1,264 +1,1718 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Perimeter & Area ITS</title>
-  <style>
-    body { font-family: Arial; padding: 30px; }
-    .option { margin: 8px 0; }
-    button { margin: 10px 5px; padding: 8px 12px; }
-    .hidden { display: none; }
-  </style>
-</head>
+import { useState, useEffect, useRef } from "react";
 
-<body>
+// ═══════════════════════════════════════════════════════════════
+// COMPLETE CONTENT DATABASE — 10 Knowledge Components
+// ═══════════════════════════════════════════════════════════════
 
-<h2>Grade 6 - Perimeter & Area ITS</h2>
+const KC_DATA = {
+  "KC-1": {
+    id: "KC-1", name: "Perimeter Concept", subtopic: "ST-1", difficulty: 0.2,
+    startMastery: 0.20,
+    prerequisites: [],
+    hook: {
+      character: "Aryan",
+      story: "Aryan made a beautiful painting for his mother's birthday! He wants to decorate it by sticking a shiny golden ribbon all around the edges. But how much ribbon does he need to buy? He needs to measure the total distance around his painting. This distance has a special name in mathematics — let's find out!",
+      emoji: "🎨"
+    },
+    explain: {
+      title: "What is Perimeter?",
+      points: [
+        "Imagine an ant walking along the border of your notebook. It starts at one corner, walks along all four edges, and comes back to where it started.",
+        "The total distance the ant walks is called the PERIMETER of the notebook.",
+        "Perimeter = the total length of the boundary of a closed shape.",
+        "We measure perimeter in units of length like centimetres (cm), metres (m), or kilometres (km) — NOT in square units!"
+      ],
+      visual: "perimeter_concept",
+      realLife: ["Fencing around a garden", "Ribbon around a gift", "Running track around a field", "Border of a photo frame"]
+    },
+    misconception: {
+      wrong: "Many students confuse perimeter with area. They think perimeter measures the surface inside the shape.",
+      correct: "Perimeter only measures the BOUNDARY — the distance around the outside edge. Think of it as the length of a fence, not the grass inside the fence."
+    },
+    questions: [
+      {
+        id: "KC1-Q1", difficulty: "easy", type: "mcq",
+        question: "What does perimeter measure?",
+        options: ["The surface inside a shape", "The total distance around the boundary of a shape", "The number of corners in a shape", "The weight of a shape"],
+        correct: 1,
+        hints: [
+          "Think about the ant walking around the edge of your notebook.",
+          "Perimeter is about the boundary — the outside edge of a shape.",
+          "Perimeter = total length of all sides added together."
+        ],
+        remedial: "Remember Aryan's ribbon? He needed ribbon to go ALL AROUND his painting — that total distance around the edge is the perimeter. It's not the paint inside the painting, it's the ribbon around it!"
+      },
+      {
+        id: "KC1-Q2", difficulty: "easy", type: "mcq",
+        question: "Which unit would you use to measure the perimeter of your classroom?",
+        options: ["Square metres (m²)", "Metres (m)", "Cubic metres (m³)", "Kilograms (kg)"],
+        correct: 1,
+        hints: [
+          "Perimeter is a length. What units do we use for length?",
+          "We measure length in cm, m, km — not square or cubic units.",
+          "The answer is metres (m) — a unit of length."
+        ],
+        remedial: "Perimeter is a distance (length), so we always use length units like cm, m, or km. Square units (cm², m²) are for area. Remember: perimeter = boundary LENGTH."
+      },
+      {
+        id: "KC1-Q3", difficulty: "medium", type: "mcq",
+        question: "A farmer wants to put a fence around his field. Which measurement does he need?",
+        options: ["Area of the field", "Perimeter of the field", "Volume of the field", "Weight of the field"],
+        correct: 1,
+        hints: [
+          "A fence goes AROUND the boundary of the field.",
+          "When something goes around the outside, we need perimeter.",
+          "Perimeter = total boundary length. The fence follows the boundary."
+        ],
+        remedial: "A fence goes around the outside edge of a field — it follows the boundary. That's exactly what perimeter measures! If the farmer wanted to plant grass INSIDE the field, he'd need the area."
+      },
+      {
+        id: "KC1-Q4", difficulty: "medium", type: "mcq",
+        question: "A shape has sides of length 3 cm, 5 cm, 4 cm, and 6 cm. What is its perimeter?",
+        options: ["12 cm", "15 cm", "18 cm", "20 cm"],
+        correct: 2,
+        hints: [
+          "Perimeter = sum of ALL sides of the shape.",
+          "Add all four sides: 3 + 5 + 4 + 6 = ?",
+          "3 + 5 = 8, then 8 + 4 = 12, then 12 + 6 = 18 cm."
+        ],
+        remedial: "To find the perimeter of ANY shape, simply add up the lengths of all its sides. Here: 3 + 5 + 4 + 6 = 18 cm. Always check you've included every side!"
+      },
+      {
+        id: "KC1-Q5", difficulty: "hard", type: "mcq",
+        question: "Priya walks around a triangular park with sides 120 m, 150 m, and 180 m. She takes 3 complete rounds. What total distance does she walk?",
+        options: ["450 m", "900 m", "1350 m", "1800 m"],
+        correct: 2,
+        hints: [
+          "First find the perimeter (one round) by adding all three sides.",
+          "Perimeter = 120 + 150 + 180 = 450 m. Now multiply by 3 rounds.",
+          "Total distance = 3 × 450 = 1350 m."
+        ],
+        remedial: "Step 1: Find the perimeter = 120 + 150 + 180 = 450 m (one round). Step 2: She walks 3 rounds, so total = 3 × 450 = 1350 m. In multi-step problems, break it into smaller steps!"
+      }
+    ]
+  },
 
-<div id="quiz">
-  <h3 id="question"></h3>
-  <div id="options"></div>
+  "KC-2": {
+    id: "KC-2", name: "Perimeter of Rectangle", subtopic: "ST-2", difficulty: 0.4,
+    startMastery: 0.20,
+    prerequisites: ["KC-1"],
+    hook: {
+      character: "Priya",
+      story: "Priya is helping her grandmother grow vegetables! Grandma has a rectangular veggie garden that is 8 metres long and 5 metres wide. They want to build a small wooden fence around it to keep the rabbits out. How much fencing material do they need to buy? Let's discover a shortcut formula!",
+      emoji: "🌱"
+    },
+    explain: {
+      title: "Perimeter of a Rectangle",
+      points: [
+        "A rectangle has 4 sides. The opposite sides are always equal in length.",
+        "If the length is 'l' and the width (breadth) is 'w', then the rectangle has two sides of length 'l' and two sides of length 'w'.",
+        "Perimeter = l + w + l + w = 2l + 2w = 2 × (l + w)",
+        "Formula: P = 2 × (length + width)",
+        "For Priya's garden: P = 2 × (8 + 5) = 2 × 13 = 26 metres of fencing!"
+      ],
+      visual: "perimeter_rectangle",
+      realLife: ["Fencing a rectangular field", "Lace around a rectangular table cover", "Border tiles around a swimming pool"]
+    },
+    misconception: {
+      wrong: "Some students only add length + width and forget to multiply by 2. They write P = l + w = 13 m, but that's only HALF the boundary!",
+      correct: "A rectangle has FOUR sides, not two. You must count both lengths AND both widths. That's why we multiply by 2: P = 2 × (l + w)."
+    },
+    questions: [
+      {
+        id: "KC2-Q1", difficulty: "easy", type: "mcq",
+        question: "What is the formula for the perimeter of a rectangle?",
+        options: ["P = length × width", "P = 2 × (length + width)", "P = 4 × side", "P = length + width"],
+        correct: 1,
+        hints: [
+          "A rectangle has two pairs of equal sides.",
+          "You add one length and one width, then multiply by 2 for both pairs.",
+          "P = 2 × (length + width)"
+        ],
+        remedial: "A rectangle has 4 sides: two lengths and two widths. Adding all four: l + w + l + w = 2l + 2w = 2(l + w). That's the formula: P = 2 × (length + width)."
+      },
+      {
+        id: "KC2-Q2", difficulty: "easy", type: "mcq",
+        question: "A rectangle has length 10 cm and width 4 cm. What is its perimeter?",
+        options: ["14 cm", "28 cm", "40 cm", "20 cm"],
+        correct: 1,
+        hints: [
+          "Use the formula P = 2 × (length + width).",
+          "P = 2 × (10 + 4) = 2 × ?",
+          "P = 2 × 14 = 28 cm."
+        ],
+        remedial: "P = 2 × (length + width) = 2 × (10 + 4) = 2 × 14 = 28 cm. Remember: first add length and width inside the bracket, then multiply by 2."
+      },
+      {
+        id: "KC2-Q3", difficulty: "medium", type: "mcq",
+        question: "A rectangular park is 50 m long and 25 m wide. An athlete runs 10 rounds around it. What distance does she cover?",
+        options: ["750 m", "1500 m", "150 m", "1250 m"],
+        correct: 1,
+        hints: [
+          "First find the perimeter of the rectangular park.",
+          "P = 2 × (50 + 25) = 2 × 75 = 150 m per round.",
+          "Total distance = 10 × 150 = 1500 m."
+        ],
+        remedial: "Step 1: P = 2 × (50 + 25) = 150 m. Step 2: 10 rounds means 10 × 150 = 1500 m. Always calculate one round first, then multiply!"
+      },
+      {
+        id: "KC2-Q4", difficulty: "medium", type: "mcq",
+        question: "Find the cost of fencing a rectangular plot 250 m long and 175 m wide at ₹12 per metre.",
+        options: ["₹5,100", "₹10,200", "₹8,500", "₹12,000"],
+        correct: 1,
+        hints: [
+          "First find how much fencing is needed (perimeter).",
+          "P = 2 × (250 + 175) = 2 × 425 = 850 m.",
+          "Cost = 850 × ₹12 = ₹10,200."
+        ],
+        remedial: "Step 1: Find perimeter = 2 × (250 + 175) = 850 m. Step 2: Cost = perimeter × rate = 850 × 12 = ₹10,200. Two-step problem: find perimeter first, then multiply by cost."
+      },
+      {
+        id: "KC2-Q5", difficulty: "hard", type: "mcq",
+        question: "A farmer wants to fence his rectangular field with 3 rounds of rope. The field is 240 m × 180 m. What total length of rope is needed?",
+        options: ["840 m", "1680 m", "2520 m", "420 m"],
+        correct: 2,
+        hints: [
+          "Find perimeter first, then multiply by 3 for three rounds of rope.",
+          "P = 2 × (240 + 180) = 2 × 420 = 840 m.",
+          "Total rope = 3 × 840 = 2520 m."
+        ],
+        remedial: "Perimeter = 2 × (240 + 180) = 840 m. But the farmer needs 3 rounds of rope, so total = 3 × 840 = 2520 m. Read carefully — '3 rounds of rope' means 3 times the perimeter!"
+      }
+    ]
+  },
 
-  <button onclick="submitAnswer()">Submit</button>
-  <button onclick="showHint()">Hint</button>
+  "KC-3": {
+    id: "KC-3", name: "Perimeter of Square", subtopic: "ST-2", difficulty: 0.35,
+    startMastery: 0.20,
+    prerequisites: ["KC-1"],
+    hook: {
+      character: "Biswamitra",
+      story: "Biswamitra wants to decorate his square photograph with colorful tape. The photo has each side measuring 15 cm. He goes to the shop and the tape is sold by the centimetre. How much tape should he buy? Since all sides of a square are equal, there must be a quick way to figure this out!",
+      emoji: "📸"
+    },
+    explain: {
+      title: "Perimeter of a Square",
+      points: [
+        "A square is a special rectangle where ALL four sides are equal.",
+        "If each side is 's', then: Perimeter = s + s + s + s = 4 × s",
+        "Formula: P = 4 × side",
+        "For Biswamitra's photo: P = 4 × 15 = 60 cm of tape needed!",
+        "This is simpler than the rectangle formula because we only need to know ONE side length."
+      ],
+      visual: "perimeter_square",
+      realLife: ["Tape around a square photo frame", "Fencing a square playground", "Border around a square handkerchief"]
+    },
+    misconception: {
+      wrong: "Some students use P = 2 × side, thinking a square only has 2 sides like they do with rectangles (P = 2(l+w) where l=w). But 2 × side gives only HALF the perimeter!",
+      correct: "A square has FOUR equal sides. So P = 4 × side, not 2 × side. You can also verify: P = 2(l+w) = 2(s+s) = 2(2s) = 4s. Both give the same answer!"
+    },
+    questions: [
+      {
+        id: "KC3-Q1", difficulty: "easy", type: "mcq",
+        question: "What is the perimeter of a square with side 5 cm?",
+        options: ["10 cm", "15 cm", "20 cm", "25 cm"],
+        correct: 2,
+        hints: [
+          "A square has 4 equal sides.",
+          "P = 4 × side = 4 × 5 = ?",
+          "P = 4 × 5 = 20 cm."
+        ],
+        remedial: "A square has 4 equal sides. Perimeter = 4 × side = 4 × 5 = 20 cm. Just multiply the side by 4!"
+      },
+      {
+        id: "KC3-Q2", difficulty: "easy", type: "mcq",
+        question: "A square garden has a perimeter of 48 m. What is the length of each side?",
+        options: ["8 m", "12 m", "16 m", "24 m"],
+        correct: 1,
+        hints: [
+          "If P = 4 × side, then side = P ÷ 4.",
+          "Side = 48 ÷ 4 = ?",
+          "Side = 48 ÷ 4 = 12 m."
+        ],
+        remedial: "Since P = 4 × side, to find the side we divide: side = P ÷ 4 = 48 ÷ 4 = 12 m. Working backwards from the formula!"
+      },
+      {
+        id: "KC3-Q3", difficulty: "medium", type: "mcq",
+        question: "Shaina takes 3 rounds of a square park with side 70 m. What distance does she travel?",
+        options: ["280 m", "560 m", "840 m", "210 m"],
+        correct: 2,
+        hints: [
+          "First find the perimeter of the square park.",
+          "P = 4 × 70 = 280 m. Now multiply by 3 rounds.",
+          "Total = 3 × 280 = 840 m."
+        ],
+        remedial: "Perimeter = 4 × 70 = 280 m (one round). For 3 rounds: 3 × 280 = 840 m."
+      },
+      {
+        id: "KC3-Q4", difficulty: "medium", type: "mcq",
+        question: "Pinky runs around a square field (side 75 m). Bob runs around a rectangular field (160 m × 105 m). Who covers more distance in one round?",
+        options: ["Pinky (300 m)", "Bob (530 m)", "Both cover equal distance", "Cannot determine"],
+        correct: 1,
+        hints: [
+          "Find both perimeters separately.",
+          "Pinky: P = 4 × 75 = 300 m. Bob: P = 2 × (160+105) = 530 m.",
+          "530 > 300, so Bob covers more distance."
+        ],
+        remedial: "Pinky: P = 4 × 75 = 300 m. Bob: P = 2(160+105) = 2 × 265 = 530 m. Bob covers 530 - 300 = 230 m MORE than Pinky."
+      },
+      {
+        id: "KC3-Q5", difficulty: "hard", type: "mcq",
+        question: "A square room needs a skirting board along all walls. Each board piece is 2 m long. The room side is 6 m. How many pieces are needed?",
+        options: ["8 pieces", "10 pieces", "12 pieces", "14 pieces"],
+        correct: 2,
+        hints: [
+          "Find the total perimeter first.",
+          "P = 4 × 6 = 24 m. Now divide by length of each piece.",
+          "Pieces needed = 24 ÷ 2 = 12 pieces."
+        ],
+        remedial: "P = 4 × 6 = 24 m total length needed. Each piece is 2 m, so: 24 ÷ 2 = 12 pieces. Two-step: find perimeter, then divide by piece length."
+      }
+    ]
+  },
 
-  <p id="hint"></p>
-  <p id="feedback"></p>
-</div>
+  "KC-4": {
+    id: "KC-4", name: "Perimeter of Triangle & Regular Polygons", subtopic: "ST-2", difficulty: 0.45,
+    startMastery: 0.20,
+    prerequisites: ["KC-2", "KC-3"],
+    hook: {
+      character: "Meera",
+      story: "Meera's school is having an art competition! She needs to put a decorative border around a triangular poster. The three sides measure 30 cm, 40 cm, and 50 cm. Her friend Kavi has a regular hexagonal poster where each side is 20 cm. Who needs more border material? Let's learn how to find perimeters of triangles and regular polygons!",
+      emoji: "🎪"
+    },
+    explain: {
+      title: "Perimeter of Triangles & Regular Polygons",
+      points: [
+        "For a TRIANGLE: Perimeter = side₁ + side₂ + side₃ (add all three sides).",
+        "Unlike rectangles, a general triangle may have all different sides, so there's no shortcut — just add all sides.",
+        "Special case: Equilateral triangle (all sides equal): P = 3 × side.",
+        "For any REGULAR POLYGON (all sides equal): P = number of sides × length of one side.",
+        "Regular pentagon: P = 5 × side. Regular hexagon: P = 6 × side. Regular octagon: P = 8 × side."
+      ],
+      visual: "perimeter_triangle",
+      realLife: ["Border around a triangular flag", "Fencing a triangular plot", "Decorating a hexagonal clock"]
+    },
+    misconception: {
+      wrong: "Students sometimes try to use the rectangle formula (2 × something) for triangles, or forget to add ALL sides of an irregular triangle.",
+      correct: "Triangles have 3 sides, not 4. Just add all three side lengths. There is no '× 2' shortcut unless it's equilateral (then P = 3 × side)."
+    },
+    questions: [
+      {
+        id: "KC4-Q1", difficulty: "easy", type: "mcq",
+        question: "A triangle has sides 6 cm, 8 cm, and 10 cm. What is its perimeter?",
+        options: ["16 cm", "20 cm", "24 cm", "28 cm"],
+        correct: 2,
+        hints: [
+          "For any triangle, add all three sides.",
+          "P = 6 + 8 + 10 = ?",
+          "P = 24 cm."
+        ],
+        remedial: "Triangle perimeter = sum of all 3 sides = 6 + 8 + 10 = 24 cm. Simple addition!"
+      },
+      {
+        id: "KC4-Q2", difficulty: "easy", type: "mcq",
+        question: "An equilateral triangle has each side = 4 cm. What is its perimeter?",
+        options: ["8 cm", "12 cm", "16 cm", "4 cm"],
+        correct: 1,
+        hints: [
+          "Equilateral means all 3 sides are equal.",
+          "P = 3 × side = 3 × 4 = ?",
+          "P = 12 cm."
+        ],
+        remedial: "Equilateral triangle: all sides are equal. P = 3 × 4 = 12 cm."
+      },
+      {
+        id: "KC4-Q3", difficulty: "medium", type: "mcq",
+        question: "Find the perimeter of a regular pentagon with each side measuring 3 cm.",
+        options: ["12 cm", "15 cm", "18 cm", "9 cm"],
+        correct: 1,
+        hints: [
+          "A pentagon has 5 sides. Regular means all sides are equal.",
+          "P = number of sides × length of one side = 5 × 3 = ?",
+          "P = 15 cm."
+        ],
+        remedial: "Regular pentagon has 5 equal sides. P = 5 × 3 = 15 cm. For any regular polygon: P = n × side."
+      },
+      {
+        id: "KC4-Q4", difficulty: "medium", type: "mcq",
+        question: "A regular hexagon has a perimeter of 18 cm. How long is each side?",
+        options: ["2 cm", "3 cm", "4 cm", "6 cm"],
+        correct: 1,
+        hints: [
+          "A hexagon has 6 sides.",
+          "P = 6 × side, so side = P ÷ 6.",
+          "Side = 18 ÷ 6 = 3 cm."
+        ],
+        remedial: "Hexagon has 6 equal sides. Side = Perimeter ÷ 6 = 18 ÷ 6 = 3 cm."
+      },
+      {
+        id: "KC4-Q5", difficulty: "hard", type: "mcq",
+        question: "A regular octagon has a perimeter of 48 cm. What is the side length? (Hint: Octagon = 8 sides)",
+        options: ["4 cm", "6 cm", "8 cm", "12 cm"],
+        correct: 1,
+        hints: [
+          "Octagon has 8 sides. All equal since it's regular.",
+          "Side = Perimeter ÷ number of sides = 48 ÷ 8.",
+          "Side = 6 cm."
+        ],
+        remedial: "Regular octagon: 8 equal sides. Side = 48 ÷ 8 = 6 cm. Always use: side = Perimeter ÷ number of sides."
+      }
+    ]
+  },
 
-<div id="result" class="hidden">
-  <h2>Session Summary</h2>
-  <p id="summary"></p>
-</div>
+  "KC-5": {
+    id: "KC-5", name: "Area Concept", subtopic: "ST-3", difficulty: 0.2,
+    startMastery: 0.20,
+    prerequisites: ["KC-1"],
+    hook: {
+      character: "Riya",
+      story: "Riya is helping her parents retile the bathroom floor! The old tiles are cracked and they need new ones. But how many tiles do they need? They can't just measure around the edges — they need to know how much SURFACE the floor covers. This measurement is called AREA, and it's different from perimeter!",
+      emoji: "🏠"
+    },
+    explain: {
+      title: "What is Area?",
+      points: [
+        "Area is the amount of surface enclosed by a closed figure.",
+        "If perimeter is the FENCE, area is the GRASS inside the fence.",
+        "We measure area by counting how many unit squares fit inside the shape.",
+        "Area is measured in SQUARE UNITS: cm² (square centimetres), m² (square metres), etc.",
+        "The little '²' means 'squared' — because we're counting squares!"
+      ],
+      visual: "area_concept",
+      realLife: ["Tiles needed for a floor", "Paint needed for a wall", "Cloth needed for a bedsheet", "Grass seed for a lawn"]
+    },
+    misconception: {
+      wrong: "Students often confuse area with perimeter. They use cm instead of cm², or think area means the boundary.",
+      correct: "Area = surface INSIDE the shape (measured in square units like cm²). Perimeter = distance AROUND the shape (measured in length units like cm). They are completely different!"
+    },
+    questions: [
+      {
+        id: "KC5-Q1", difficulty: "easy", type: "mcq",
+        question: "What does area measure?",
+        options: ["The boundary of a shape", "The surface enclosed by a shape", "The number of sides", "The longest side"],
+        correct: 1,
+        hints: [
+          "Think about Riya's floor tiles — they cover the surface.",
+          "Area is about what's INSIDE the shape, not the edges.",
+          "Area = surface enclosed by a closed figure."
+        ],
+        remedial: "Area measures the surface INSIDE a shape. Think of it as the space you'd need to paint or tile. Perimeter is the boundary; area is what's inside."
+      },
+      {
+        id: "KC5-Q2", difficulty: "easy", type: "mcq",
+        question: "Which unit is used to measure area?",
+        options: ["Centimetres (cm)", "Square centimetres (cm²)", "Cubic centimetres (cm³)", "Kilograms (kg)"],
+        correct: 1,
+        hints: [
+          "Area is measured by counting unit squares.",
+          "Since we count squares, the unit has 'square' in it.",
+          "Area uses square units like cm², m², km²."
+        ],
+        remedial: "Area = counting squares, so we use SQUARE units (cm², m²). Perimeter uses linear units (cm, m). The '²' symbol tells you it's area!"
+      },
+      {
+        id: "KC5-Q3", difficulty: "medium", type: "mcq",
+        question: "Riya wants to paint a wall. Does she need to find the perimeter or the area of the wall?",
+        options: ["Perimeter", "Area", "Both", "Neither"],
+        correct: 1,
+        hints: [
+          "Paint covers the surface of the wall.",
+          "Surface coverage = area.",
+          "Area tells us how much surface needs to be painted."
+        ],
+        remedial: "Painting covers the SURFACE of the wall, not just the edges. So Riya needs the AREA. If she wanted to put a border/frame, she'd need perimeter."
+      },
+      {
+        id: "KC5-Q4", difficulty: "medium", type: "mcq",
+        question: "A shape drawn on graph paper covers 12 full squares and 4 half-squares. What is its area?",
+        options: ["12 sq units", "14 sq units", "16 sq units", "10 sq units"],
+        correct: 1,
+        hints: [
+          "Full squares count as 1 each. Half squares count as ½ each.",
+          "Area = 12 full + 4 halves = 12 + (4 × 0.5) = ?",
+          "Area = 12 + 2 = 14 square units."
+        ],
+        remedial: "On graph paper: count full squares as 1, half squares as ½. Area = 12 + (4 × ½) = 12 + 2 = 14 square units."
+      },
+      {
+        id: "KC5-Q5", difficulty: "hard", type: "mcq",
+        question: "Which statement is TRUE?",
+        options: [
+          "Two shapes with the same perimeter always have the same area",
+          "Two shapes with the same area always have the same perimeter",
+          "Shapes can have the same perimeter but different areas",
+          "Area and perimeter always have the same number"
+        ],
+        correct: 2,
+        hints: [
+          "Think: can a long thin rectangle and a nearly-square rectangle have the same perimeter?",
+          "A 1×9 rectangle: P=20, A=9. A 4×6 rectangle: P=20, A=24. Same P, different A!",
+          "Shapes CAN have the same perimeter but different areas."
+        ],
+        remedial: "A 1×9 rectangle has P=20, A=9. A 4×6 rectangle has P=20, A=24. Same perimeter, but very different areas! Perimeter and area are independent measurements."
+      }
+    ]
+  },
 
-<script>
+  "KC-6": {
+    id: "KC-6", name: "Area of Rectangle & Square", subtopic: "ST-4", difficulty: 0.4,
+    startMastery: 0.20,
+    prerequisites: ["KC-5"],
+    hook: {
+      character: "Rohan",
+      story: "Rohan's family just moved into a new house! His room is 5 metres long and 4 metres wide. His father wants to buy a carpet to cover the entire floor. At the shop, carpets are sold by the square metre. How many square metres of carpet do they need? Let's learn the formula for area of rectangles and squares!",
+      emoji: "🏡"
+    },
+    explain: {
+      title: "Area of Rectangle & Square",
+      points: [
+        "Draw a rectangle on graph paper. Count the squares inside — that's the area!",
+        "A rectangle 5 cm × 3 cm has 5 columns of 3 squares each = 15 squares = 15 cm².",
+        "Formula for Rectangle: Area = length × width (or breadth)",
+        "A square is a rectangle with all sides equal. Area = side × side = side²",
+        "For Rohan's room: Area = 5 × 4 = 20 m² of carpet needed!"
+      ],
+      visual: "area_rectangle",
+      realLife: ["Carpet for a room", "Glass for a window pane", "Tiles for a floor", "Cloth for a tablecloth"]
+    },
+    misconception: {
+      wrong: "Students sometimes confuse the area formula with the perimeter formula. They write Area = 2(l+w) instead of Area = l × w.",
+      correct: "Area = length × width (MULTIPLY). Perimeter = 2 × (length + width) (ADD then double). Multiplication for area, addition for perimeter!"
+    },
+    questions: [
+      {
+        id: "KC6-Q1", difficulty: "easy", type: "mcq",
+        question: "Find the area of a rectangle with length 12 cm and width 4 cm.",
+        options: ["32 cm²", "48 cm²", "16 cm²", "24 cm²"],
+        correct: 1,
+        hints: [
+          "Area of rectangle = length × width.",
+          "A = 12 × 4 = ?",
+          "A = 48 cm²."
+        ],
+        remedial: "Area = length × width = 12 × 4 = 48 cm². Remember: multiply length and width for area!"
+      },
+      {
+        id: "KC6-Q2", difficulty: "easy", type: "mcq",
+        question: "What is the area of a square with side 8 m?",
+        options: ["32 m²", "64 m²", "16 m²", "24 m²"],
+        correct: 1,
+        hints: [
+          "Area of square = side × side.",
+          "A = 8 × 8 = ?",
+          "A = 64 m²."
+        ],
+        remedial: "Area of square = side × side = 8 × 8 = 64 m². All sides are equal, so multiply the side by itself."
+      },
+      {
+        id: "KC6-Q3", difficulty: "medium", type: "mcq",
+        question: "A room is 4 m long and 3 m 50 cm wide. How many square metres of carpet is needed?",
+        options: ["14 m²", "12 m²", "15 m²", "7 m²"],
+        correct: 0,
+        hints: [
+          "Convert 3 m 50 cm to metres: 3.5 m.",
+          "Area = length × width = 4 × 3.5 = ?",
+          "Area = 14 m²."
+        ],
+        remedial: "First convert: 3 m 50 cm = 3.5 m. Then Area = 4 × 3.5 = 14 m². Always convert to the same unit before calculating!"
+      },
+      {
+        id: "KC6-Q4", difficulty: "medium", type: "mcq",
+        question: "Bob wants to tile a 4 m × 3 m room with square tiles of side 0.5 m. How many tiles are needed?",
+        options: ["24 tiles", "48 tiles", "12 tiles", "96 tiles"],
+        correct: 1,
+        hints: [
+          "Find room area and tile area separately.",
+          "Room area = 4 × 3 = 12 m². Tile area = 0.5 × 0.5 = 0.25 m².",
+          "Number of tiles = 12 ÷ 0.25 = 48 tiles."
+        ],
+        remedial: "Room area = 12 m². Each tile = 0.5 × 0.5 = 0.25 m². Tiles needed = 12 ÷ 0.25 = 48. Divide total area by one tile's area!"
+      },
+      {
+        id: "KC6-Q5", difficulty: "hard", type: "mcq",
+        question: "If the side of a square is doubled, what happens to its area?",
+        options: ["Area doubles", "Area becomes 4 times", "Area stays same", "Area triples"],
+        correct: 1,
+        hints: [
+          "Try an example: side = 3, area = 9. Doubled side = 6, new area = ?",
+          "New area = 6 × 6 = 36. Compare: 36 ÷ 9 = 4 times!",
+          "When side doubles, area becomes 4 times (2² = 4)."
+        ],
+        remedial: "If side = s, area = s². If side = 2s, area = (2s)² = 4s². The area becomes 4 TIMES, not 2 times! Doubling the side quadruples the area."
+      }
+    ]
+  },
 
-// =======================
-// QUESTION BANK (NCERT BASED)
-// =======================
-const questions = [
-  {
-    question: "What does perimeter measure?",
-    options: ["Area", "Boundary length", "Volume", "Height"],
-    correct: "Boundary length",
-    hints: [
-      "Think of walking around a field",
-      "It measures outer edge",
-      "Total distance around boundary"
-    ],
-    kc: "KC-1",
-    difficulty: "beginner"
+  "KC-7": {
+    id: "KC-7", name: "Area of Triangle", subtopic: "ST-4", difficulty: 0.6,
+    startMastery: 0.15,
+    prerequisites: ["KC-5", "KC-6"],
+    hook: {
+      character: "Riya's Class",
+      story: "Riya's class is painting a huge triangular mural on the school wall for Republic Day! The triangular section has a base of 6 metres and stands 4 metres tall. Before buying paint, the teacher asks: 'How many square metres of wall will we cover?' Riya thinks about it — a triangle isn't a rectangle, so she can't just multiply length × width. But there's a clever connection...",
+      emoji: "🎨"
+    },
+    explain: {
+      title: "Area of a Triangle",
+      points: [
+        "Imagine a rectangle with length = base and width = height. Draw a diagonal — it splits the rectangle into TWO equal triangles!",
+        "Each triangle is exactly HALF of the rectangle.",
+        "So: Area of Triangle = ½ × base × height",
+        "IMPORTANT: The 'height' must be PERPENDICULAR (straight up) from the base, not the slanted side!",
+        "For the mural: A = ½ × 6 × 4 = ½ × 24 = 12 m² of paint needed."
+      ],
+      visual: "area_triangle",
+      realLife: ["Painting a triangular wall", "Area of a triangular garden", "Fabric for a triangular flag", "Land measurement of triangular plots"]
+    },
+    misconception: {
+      wrong: "The #1 mistake: students write Area = base × height, forgetting the ½ (or ÷ 2). This gives DOUBLE the correct answer!",
+      correct: "A triangle is HALF a rectangle. You MUST include ½ in the formula: Area = ½ × base × height. Always divide by 2!"
+    },
+    questions: [
+      {
+        id: "KC7-Q1", difficulty: "easy", type: "mcq",
+        question: "What is the area of a triangle with base 10 cm and height 6 cm?",
+        options: ["60 cm²", "30 cm²", "16 cm²", "20 cm²"],
+        correct: 1,
+        hints: [
+          "Area of triangle = ½ × base × height.",
+          "A = ½ × 10 × 6 = ½ × 60 = ?",
+          "A = 30 cm²."
+        ],
+        remedial: "Area = ½ × base × height = ½ × 10 × 6 = ½ × 60 = 30 cm². Don't forget the ½!"
+      },
+      {
+        id: "KC7-Q2", difficulty: "easy", type: "mcq",
+        question: "Why do we use ½ in the triangle area formula?",
+        options: [
+          "Because a triangle has half the sides of a rectangle",
+          "Because a triangle is half of a rectangle with same base and height",
+          "Because triangles are small",
+          "Because we always divide by 2 in geometry"
+        ],
+        correct: 1,
+        hints: [
+          "Draw a rectangle. Now draw a diagonal line from corner to corner.",
+          "The diagonal splits the rectangle into two equal triangles.",
+          "Each triangle = half the rectangle. So area = ½ × base × height."
+        ],
+        remedial: "A rectangle split by a diagonal gives 2 equal triangles. Each triangle is exactly HALF the rectangle. Rectangle area = b × h, so triangle = ½ × b × h."
+      },
+      {
+        id: "KC7-Q3", difficulty: "medium", type: "mcq",
+        question: "A triangle has base 12 cm and height 5 cm. What is its area?",
+        options: ["60 cm²", "30 cm²", "17 cm²", "120 cm²"],
+        correct: 1,
+        hints: [
+          "Use the formula: A = ½ × base × height.",
+          "A = ½ × 12 × 5 = ?",
+          "A = ½ × 60 = 30 cm²."
+        ],
+        remedial: "A = ½ × 12 × 5 = ½ × 60 = 30 cm². Tip: you can multiply base × height first, then divide by 2."
+      },
+      {
+        id: "KC7-Q4", difficulty: "medium", type: "mcq",
+        question: "A triangle has area 24 cm² and base 8 cm. What is its height?",
+        options: ["3 cm", "6 cm", "12 cm", "4 cm"],
+        correct: 1,
+        hints: [
+          "Area = ½ × base × height. Plug in what you know.",
+          "24 = ½ × 8 × height → 24 = 4 × height.",
+          "Height = 24 ÷ 4 = 6 cm."
+        ],
+        remedial: "24 = ½ × 8 × h → 24 = 4h → h = 6 cm. Rearrange the formula when you need to find a missing dimension!"
+      },
+      {
+        id: "KC7-Q5", difficulty: "hard", type: "mcq",
+        question: "A rectangular wall is 8 m × 6 m. A triangular section (base 8 m, height 6 m) is painted red. What area is NOT painted?",
+        options: ["48 m²", "24 m²", "12 m²", "36 m²"],
+        correct: 1,
+        hints: [
+          "Find the rectangle area and triangle area separately.",
+          "Rectangle = 8 × 6 = 48 m². Triangle = ½ × 8 × 6 = 24 m².",
+          "Unpainted area = 48 - 24 = 24 m²."
+        ],
+        remedial: "Rectangle = 48 m². Triangle = 24 m². Unpainted = 48 - 24 = 24 m². The triangle is exactly half the rectangle!"
+      }
+    ]
   },
-  {
-    question: "What does area measure?",
-    options: ["Boundary", "Surface covered", "Length", "Sides"],
-    correct: "Surface covered",
-    hints: [
-      "Think of tiles on floor",
-      "Inside space",
-      "Measured in square units"
-    ],
-    kc: "KC-5",
-    difficulty: "beginner"
+
+  "KC-8": {
+    id: "KC-8", name: "Perimeter vs Area", subtopic: "ST-5", difficulty: 0.65,
+    startMastery: 0.15,
+    prerequisites: ["KC-2", "KC-6"],
+    hook: {
+      character: "Aarav & Zara",
+      story: "Aarav and Zara's school is redesigning the garden! Aarav says: 'We need 50 metres of fencing.' Zara says: 'We need 200 square metres of grass seed.' Their teacher smiles — both are right, but they're measuring different things! Aarav needs the PERIMETER (for the fence around the border), and Zara needs the AREA (for the grass covering the surface). Knowing when to use which is a superpower in maths!",
+      emoji: "🏫"
+    },
+    explain: {
+      title: "Perimeter vs Area — Choosing the Right One",
+      points: [
+        "PERIMETER = total distance around the boundary. Use when: fencing, framing, putting ribbon/border.",
+        "AREA = total surface inside the shape. Use when: painting, tiling, covering with carpet/grass.",
+        "Key question to ask: Am I measuring AROUND the edge or ACROSS the surface?",
+        "Around the edge → Perimeter. Across the surface → Area.",
+        "Common trick: 'cost of fencing' = perimeter × rate. 'cost of painting' = area × rate."
+      ],
+      visual: "perimeter_vs_area",
+      realLife: ["Fence (P) vs Grass (A) for garden", "Frame (P) vs Glass (A) for window", "Border (P) vs Paint (A) for wall"]
+    },
+    misconception: {
+      wrong: "Students often mix up when to use perimeter vs area. For example, they might calculate area when asked about fencing cost, or perimeter when asked about painting cost.",
+      correct: "Ask yourself: Does it go AROUND the edge (P) or COVER the surface (A)? Fence/border/frame = Perimeter. Paint/tile/carpet = Area."
+    },
+    questions: [
+      {
+        id: "KC8-Q1", difficulty: "easy", type: "mcq",
+        question: "A painter needs to paint a wall. Does he need the perimeter or area of the wall?",
+        options: ["Perimeter", "Area", "Both", "Neither"],
+        correct: 1,
+        hints: [
+          "Paint covers the surface of the wall.",
+          "Surface = area.",
+          "Painting → Area."
+        ],
+        remedial: "Painting covers the SURFACE, so we need AREA. Remember: surface/cover → Area, border/edge → Perimeter."
+      },
+      {
+        id: "KC8-Q2", difficulty: "easy", type: "mcq",
+        question: "To find the cost of framing a picture, you need the:",
+        options: ["Area of the picture", "Perimeter of the picture", "Volume of the picture", "Weight of the picture"],
+        correct: 1,
+        hints: [
+          "A frame goes around the EDGES of the picture.",
+          "Around the edges = boundary = perimeter.",
+          "Framing → Perimeter."
+        ],
+        remedial: "A frame goes around the border, so we need PERIMETER. Frame = edge = boundary = perimeter."
+      },
+      {
+        id: "KC8-Q3", difficulty: "medium", type: "mcq",
+        question: "Geeta wants to build a compound wall around her house. She needs to find the:",
+        options: ["Area of the land", "Perimeter of the land", "Height of the house", "Area of the wall"],
+        correct: 1,
+        hints: [
+          "A compound wall goes AROUND the boundary of the land.",
+          "Around the boundary → Perimeter.",
+          "She needs the perimeter to know how long the wall should be."
+        ],
+        remedial: "A compound wall follows the boundary of the land. Boundary = Perimeter. She needs to know the total length around her land."
+      },
+      {
+        id: "KC8-Q4", difficulty: "medium", type: "mcq",
+        question: "TRUE or FALSE: 'An engineer building a compound wall on all sides of a house must find the AREA of the compound.'",
+        options: ["TRUE", "FALSE — he needs the perimeter", "TRUE — walls need area", "Cannot determine"],
+        correct: 1,
+        hints: [
+          "A wall goes around the boundary, not across the surface.",
+          "Around the boundary = perimeter, not area.",
+          "The statement is FALSE. He needs perimeter."
+        ],
+        remedial: "This is a common trick question! Building a wall AROUND something = perimeter. The statement is FALSE — the engineer needs PERIMETER, not area."
+      },
+      {
+        id: "KC8-Q5", difficulty: "hard", type: "mcq",
+        question: "A rectangular garden is 20 m × 15 m. Fencing costs ₹50/m and grass costs ₹10/m². What is the total cost of fencing AND grass?",
+        options: ["₹3,500", "₹6,500", "₹5,000", "₹3,000"],
+        correct: 1,
+        hints: [
+          "Find perimeter for fencing cost AND area for grass cost.",
+          "P = 2(20+15) = 70 m → Fencing = 70 × 50 = ₹3,500. Area = 20 × 15 = 300 m² → Grass = 300 × 10 = ₹3,000.",
+          "Total = ₹3,500 + ₹3,000 = ₹6,500."
+        ],
+        remedial: "Fencing (around) → P = 70 m → 70 × 50 = ₹3,500. Grass (surface) → A = 300 m² → 300 × 10 = ₹3,000. Total = ₹6,500. This problem needs BOTH perimeter AND area!"
+      }
+    ]
   },
-  {
-    question: "A square has side 5 cm. Find its perimeter.",
-    options: ["10", "20", "25", "15"],
-    correct: "20",
-    hints: [
-      "Square has 4 equal sides",
-      "Add all sides",
-      "4 × 5 = 20"
-    ],
-    kc: "KC-3",
-    difficulty: "beginner"
+
+  "KC-9": {
+    id: "KC-9", name: "Real-world Word Problems", subtopic: "ST-5", difficulty: 0.75,
+    startMastery: 0.15,
+    prerequisites: ["KC-2", "KC-6"],
+    hook: {
+      character: "Riya's Uncle",
+      story: "Riya's uncle is building a fence around his rectangular mango farm. The farm is 25 metres long and 15 metres wide. The fence-maker charges ₹40 for every metre of fencing. Riya wants to help calculate the total cost before uncle signs the contract. This needs TWO steps — first find how much fencing, then find the cost. Let's become problem-solving experts!",
+      emoji: "🥭"
+    },
+    explain: {
+      title: "Solving Real-World Problems",
+      points: [
+        "Real-world problems often need MULTIPLE steps. Don't try to solve everything at once!",
+        "Step 1: UNDERSTAND — What are you asked to find? Read carefully.",
+        "Step 2: IDENTIFY — Is it perimeter or area? What formula do you need?",
+        "Step 3: CALCULATE — Apply the formula with the given numbers.",
+        "Step 4: EXTEND — If there's a cost/rate, multiply your answer by the rate.",
+        "For Riya's uncle: P = 2(25+15) = 80 m. Cost = 80 × ₹40 = ₹3,200."
+      ],
+      visual: "word_problems",
+      realLife: ["Fencing costs", "Tiling costs", "Painting costs", "Carpet costs"]
+    },
+    misconception: {
+      wrong: "Students solve only the first step (finding P or A) and forget to multiply by the cost rate. Or they use the wrong measurement (perimeter when they need area, or vice versa).",
+      correct: "Always re-read the question after solving! Ask: 'Did I answer what was ASKED?' If cost is involved, you need one more multiplication step."
+    },
+    questions: [
+      {
+        id: "KC9-Q1", difficulty: "easy", type: "mcq",
+        question: "A rectangular garden is 50 m long. Its area is 300 m². What is the width?",
+        options: ["5 m", "6 m", "8 m", "10 m"],
+        correct: 1,
+        hints: [
+          "Area = length × width. You know area and length.",
+          "300 = 50 × width → width = 300 ÷ 50.",
+          "Width = 6 m."
+        ],
+        remedial: "Area = l × w → 300 = 50 × w → w = 300 ÷ 50 = 6 m. Rearrange the formula to find the missing value!"
+      },
+      {
+        id: "KC9-Q2", difficulty: "easy", type: "mcq",
+        question: "What is the cost of tiling a rectangular plot 500 m × 200 m at ₹8 per 100 m²?",
+        options: ["₹8,000", "₹800", "₹80,000", "₹4,000"],
+        correct: 0,
+        hints: [
+          "First find the area of the plot.",
+          "Area = 500 × 200 = 100,000 m². Rate = ₹8 per 100 m².",
+          "Cost = (100,000 ÷ 100) × 8 = 1000 × 8 = ₹8,000."
+        ],
+        remedial: "Area = 100,000 m². Rate = ₹8 per 100 m² → ₹8,000. Break it down: find area, then apply the rate."
+      },
+      {
+        id: "KC9-Q3", difficulty: "medium", type: "mcq",
+        question: "A table-top measures 2 m by 1 m 50 cm. What is its area in square metres?",
+        options: ["2 m²", "3 m²", "2.5 m²", "3.5 m²"],
+        correct: 1,
+        hints: [
+          "Convert 1 m 50 cm to metres first.",
+          "1 m 50 cm = 1.5 m. Area = 2 × 1.5 = ?",
+          "Area = 3 m²."
+        ],
+        remedial: "Convert: 1 m 50 cm = 1.5 m. Area = 2 × 1.5 = 3 m². Always convert to same units first!"
+      },
+      {
+        id: "KC9-Q4", difficulty: "hard", type: "mcq",
+        question: "A floor is 5 m × 4 m. A square carpet of side 3 m is placed on it. What area of floor is NOT carpeted?",
+        options: ["9 m²", "11 m²", "20 m²", "15 m²"],
+        correct: 1,
+        hints: [
+          "Find both areas: floor and carpet.",
+          "Floor = 5 × 4 = 20 m². Carpet = 3 × 3 = 9 m².",
+          "Uncarpeted = 20 - 9 = 11 m²."
+        ],
+        remedial: "Floor = 20 m², Carpet = 9 m². Uncarpeted = 20 - 9 = 11 m². Subtraction problems: find total, subtract covered part."
+      },
+      {
+        id: "KC9-Q5", difficulty: "hard", type: "mcq",
+        question: "5 square flower beds (side 1 m each) are dug in a 5 m × 4 m garden. What is the remaining area?",
+        options: ["15 m²", "20 m²", "10 m²", "5 m²"],
+        correct: 0,
+        hints: [
+          "Find garden area and total flower bed area.",
+          "Garden = 5 × 4 = 20 m². Each bed = 1 × 1 = 1 m². Five beds = 5 m².",
+          "Remaining = 20 - 5 = 15 m²."
+        ],
+        remedial: "Garden = 20 m². 5 flower beds = 5 × 1 = 5 m². Remaining = 20 - 5 = 15 m². Subtract the parts you remove!"
+      }
+    ]
   },
-  {
-    question: "Rectangle: length = 8, width = 3. Find area.",
-    options: ["24", "11", "24 m", "22"],
-    correct: "24",
-    hints: [
-      "Area = length × width",
-      "Multiply both",
-      "8 × 3"
-    ],
-    kc: "KC-6",
-    difficulty: "beginner"
-  },
-  {
-    question: "Triangle sides are 6, 8, 10. Find perimeter.",
-    options: ["24", "48", "14", "80"],
-    correct: "24",
-    hints: [
-      "Add all sides",
-      "6 + 8 + 10",
-      "Total = 24"
-    ],
-    kc: "KC-4",
-    difficulty: "intermediate"
-  },
-  {
-    question: "Painter paints wall, gardener fences field. Who needs area?",
-    options: ["Painter", "Gardener", "Both", "None"],
-    correct: "Painter",
-    hints: [
-      "Painting covers surface",
-      "Surface = area",
-      "Fencing = perimeter"
-    ],
-    kc: "KC-8",
-    difficulty: "intermediate"
-  },
-  {
-    question: "A rectangle has perimeter 36 and width 7. Find length.",
-    options: ["11", "29", "22", "5"],
-    correct: "11",
-    hints: [
-      "P = 2(l + w)",
-      "36/2 = 18",
-      "18 - 7 = 11"
-    ],
-    kc: "KC-2",
-    difficulty: "intermediate"
-  },
-  {
-    question: "Cost of fencing = ₹40/m. Perimeter = 80m. Total cost?",
-    options: ["3200", "1500", "6000", "800"],
-    correct: "3200",
-    hints: [
-      "Cost = perimeter × rate",
-      "80 × 40",
-      "3200"
-    ],
-    kc: "KC-9",
-    difficulty: "advanced"
-  },
-  {
-    question: "Square area = 64. Find side.",
-    options: ["8", "16", "32", "4"],
-    correct: "8",
-    hints: [
-      "Area = side × side",
-      "Find sqrt(64)",
-      "8 × 8 = 64"
-    ],
-    kc: "KC-10",
-    difficulty: "advanced"
+
+  "KC-10": {
+    id: "KC-10", name: "Finding Missing Dimensions", subtopic: "ST-5", difficulty: 0.8,
+    startMastery: 0.15,
+    prerequisites: ["KC-2", "KC-6"],
+    hook: {
+      character: "Architect Ananya",
+      story: "Architect Ananya is designing a house. She knows the area of a square room should be 64 m², but she needs to figure out how long each wall should be. She also has a rectangular hall with perimeter 36 m and width 7 m — what should the length be? Working backwards from perimeter or area to find missing sides is like being a detective — let's learn this skill!",
+      emoji: "📐"
+    },
+    explain: {
+      title: "Finding Missing Dimensions",
+      points: [
+        "Sometimes you know the perimeter or area and need to find a missing side. Work the formula BACKWARDS!",
+        "From rectangle perimeter: P = 2(l+w) → l+w = P÷2 → l = (P÷2) - w",
+        "From rectangle area: A = l × w → l = A ÷ w",
+        "From square area: A = side² → side = √A (square root)",
+        "For Ananya: √64 = 8 m (each wall). Hall length = (36÷2) - 7 = 18 - 7 = 11 m."
+      ],
+      visual: "missing_dimensions",
+      realLife: ["Finding wall length from room area", "Calculating width when perimeter is known", "Determining side from area of square land"]
+    },
+    misconception: {
+      wrong: "Students often forget to divide the perimeter by 2 first. They write: l = P - w = 36 - 7 = 29 m (WRONG!).",
+      correct: "For rectangles: P = 2(l+w), so l+w = P÷2 FIRST, then subtract w. For the hall: l+w = 36÷2 = 18, then l = 18 - 7 = 11 m."
+    },
+    questions: [
+      {
+        id: "KC10-Q1", difficulty: "easy", type: "mcq",
+        question: "A square has area 64 cm². What is the length of each side?",
+        options: ["4 cm", "8 cm", "16 cm", "32 cm"],
+        correct: 1,
+        hints: [
+          "Area of square = side × side. What number × itself = 64?",
+          "Think: 8 × 8 = 64.",
+          "Side = √64 = 8 cm."
+        ],
+        remedial: "Area = side × side = side². So side = √Area = √64 = 8 cm. Ask: what number times itself gives 64?"
+      },
+      {
+        id: "KC10-Q2", difficulty: "easy", type: "mcq",
+        question: "A rectangle has area 36 cm² and length 9 cm. What is the width?",
+        options: ["3 cm", "4 cm", "6 cm", "9 cm"],
+        correct: 1,
+        hints: [
+          "Area = length × width.",
+          "36 = 9 × width → width = 36 ÷ 9.",
+          "Width = 4 cm."
+        ],
+        remedial: "A = l × w → 36 = 9 × w → w = 36 ÷ 9 = 4 cm. Just divide area by the known side!"
+      },
+      {
+        id: "KC10-Q3", difficulty: "medium", type: "mcq",
+        question: "A rectangle has perimeter 36 m and width 7 m. Find the length.",
+        options: ["9 m", "11 m", "14 m", "29 m"],
+        correct: 1,
+        hints: [
+          "P = 2(l + w). First find l + w.",
+          "l + w = P ÷ 2 = 36 ÷ 2 = 18 m.",
+          "l = 18 - 7 = 11 m."
+        ],
+        remedial: "Step 1: l + w = P ÷ 2 = 18. Step 2: l = 18 - 7 = 11 m. DON'T subtract width directly from perimeter — divide by 2 first!"
+      },
+      {
+        id: "KC10-Q4", difficulty: "hard", type: "mcq",
+        question: "A rectangle has perimeter 50 cm and length 15 cm. What is its area?",
+        options: ["150 cm²", "100 cm²", "750 cm²", "200 cm²"],
+        correct: 0,
+        hints: [
+          "First find the width using the perimeter formula.",
+          "l + w = 50 ÷ 2 = 25. Width = 25 - 15 = 10 cm.",
+          "Area = 15 × 10 = 150 cm²."
+        ],
+        remedial: "Step 1: w = (P÷2) - l = 25 - 15 = 10 cm. Step 2: Area = l × w = 15 × 10 = 150 cm². Multi-step: find missing side first, then calculate area."
+      },
+      {
+        id: "KC10-Q5", difficulty: "hard", type: "mcq",
+        question: "A square has area 144 m². What is its perimeter?",
+        options: ["36 m", "48 m", "24 m", "12 m"],
+        correct: 1,
+        hints: [
+          "First find the side from the area.",
+          "Side = √144 = 12 m.",
+          "Perimeter = 4 × 12 = 48 m."
+        ],
+        remedial: "Step 1: Side = √144 = 12 m. Step 2: P = 4 × side = 4 × 12 = 48 m. Working backwards: area → side → perimeter."
+      }
+    ]
   }
-];
+};
 
-// =======================
-// STATE VARIABLES
-// =======================
-let current = 0;
-let selected = null;
-let hintLevel = 0;
+// ═══════════════════════════════════════════════════════════════
+// SVG VISUAL COMPONENTS
+// ═══════════════════════════════════════════════════════════════
 
-let correct = 0;
-let wrong = 0;
-let hintsUsed = 0;
-let startTime = Date.now();
+const ShapeVisual = ({ type }) => {
+  const visuals = {
+    perimeter_concept: (
+      <svg viewBox="0 0 300 200" className="w-full max-w-md mx-auto">
+        <rect x="50" y="30" width="200" height="140" fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="12,6" rx="4">
+          <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <circle r="6" fill="#ef4444">
+          <animateMotion dur="4s" repeatCount="indefinite" path="M 50,30 L 250,30 L 250,170 L 50,170 Z"/>
+        </circle>
+        <text x="150" y="18" textAnchor="middle" fill="#f59e0b" fontSize="13" fontWeight="bold">← Perimeter = distance around →</text>
+        <text x="150" y="110" textAnchor="middle" fill="#6b7280" fontSize="12">🐜 The ant walks</text>
+        <text x="150" y="126" textAnchor="middle" fill="#6b7280" fontSize="12">around the boundary</text>
+      </svg>
+    ),
+    perimeter_rectangle: (
+      <svg viewBox="0 0 320 220" className="w-full max-w-md mx-auto">
+        <rect x="40" y="40" width="240" height="140" fill="#dbeafe" stroke="#3b82f6" strokeWidth="3" rx="2"/>
+        <text x="160" y="30" textAnchor="middle" fill="#3b82f6" fontSize="14" fontWeight="bold">length (l)</text>
+        <text x="160" y="200" textAnchor="middle" fill="#3b82f6" fontSize="14" fontWeight="bold">length (l)</text>
+        <text x="20" y="115" textAnchor="middle" fill="#10b981" fontSize="13" fontWeight="bold" transform="rotate(-90,20,115)">width (w)</text>
+        <text x="298" y="115" textAnchor="middle" fill="#10b981" fontSize="13" fontWeight="bold" transform="rotate(90,298,115)">width (w)</text>
+        <text x="160" y="105" textAnchor="middle" fill="#1e40af" fontSize="15" fontWeight="bold">P = 2 × (l + w)</text>
+        <text x="160" y="125" textAnchor="middle" fill="#6b7280" fontSize="12">Opposite sides are equal!</text>
+      </svg>
+    ),
+    perimeter_square: (
+      <svg viewBox="0 0 280 240" className="w-full max-w-md mx-auto">
+        <rect x="50" y="30" width="160" height="160" fill="#f0fdf4" stroke="#22c55e" strokeWidth="3" rx="2"/>
+        <text x="130" y="22" textAnchor="middle" fill="#22c55e" fontSize="14" fontWeight="bold">side (s)</text>
+        <text x="130" y="210" textAnchor="middle" fill="#22c55e" fontSize="14" fontWeight="bold">side (s)</text>
+        <text x="38" y="115" textAnchor="middle" fill="#22c55e" fontSize="13" fontWeight="bold" transform="rotate(-90,38,115)">side (s)</text>
+        <text x="225" y="115" textAnchor="middle" fill="#22c55e" fontSize="13" fontWeight="bold" transform="rotate(90,225,115)">side (s)</text>
+        <text x="130" y="105" textAnchor="middle" fill="#15803d" fontSize="16" fontWeight="bold">P = 4 × s</text>
+        <text x="130" y="125" textAnchor="middle" fill="#6b7280" fontSize="12">All 4 sides equal!</text>
+      </svg>
+    ),
+    perimeter_triangle: (
+      <svg viewBox="0 0 320 220" className="w-full max-w-md mx-auto">
+        <polygon points="160,30 40,190 280,190" fill="#fef3c7" stroke="#f59e0b" strokeWidth="3"/>
+        <text x="90" y="100" textAnchor="middle" fill="#d97706" fontSize="13" fontWeight="bold" transform="rotate(-55,90,100)">side a</text>
+        <text x="230" y="100" textAnchor="middle" fill="#d97706" fontSize="13" fontWeight="bold" transform="rotate(55,230,100)">side b</text>
+        <text x="160" y="210" textAnchor="middle" fill="#d97706" fontSize="14" fontWeight="bold">side c</text>
+        <text x="160" y="140" textAnchor="middle" fill="#92400e" fontSize="15" fontWeight="bold">P = a + b + c</text>
+        <text x="160" y="160" textAnchor="middle" fill="#6b7280" fontSize="11">Add ALL sides!</text>
+      </svg>
+    ),
+    area_concept: (
+      <svg viewBox="0 0 300 220" className="w-full max-w-md mx-auto">
+        <rect x="30" y="20" width="200" height="160" fill="#dbeafe" stroke="#3b82f6" strokeWidth="2"/>
+        {[...Array(8)].map((_, r) => [...Array(10)].map((_, c) => (
+          <rect key={`${r}-${c}`} x={30+c*20} y={20+r*20} width="20" height="20" fill={`rgba(59,130,246,${0.1 + Math.random()*0.15})`} stroke="#93c5fd" strokeWidth="0.5"/>
+        )))}
+        <text x="250" y="100" fill="#1e40af" fontSize="12" fontWeight="bold">← Count</text>
+        <text x="250" y="116" fill="#1e40af" fontSize="12" fontWeight="bold">the unit</text>
+        <text x="250" y="132" fill="#1e40af" fontSize="12" fontWeight="bold">squares!</text>
+        <text x="130" y="205" textAnchor="middle" fill="#1e40af" fontSize="14" fontWeight="bold">Area = surface inside (in cm²)</text>
+      </svg>
+    ),
+    area_rectangle: (
+      <svg viewBox="0 0 320 230" className="w-full max-w-md mx-auto">
+        <rect x="40" y="30" width="200" height="120" fill="#ede9fe" stroke="#7c3aed" strokeWidth="3"/>
+        {[...Array(4)].map((_, r) => [...Array(5)].map((_, c) => (
+          <rect key={`${r}-${c}`} x={40+c*40} y={30+r*30} width="40" height="30" fill="none" stroke="#c4b5fd" strokeWidth="1"/>
+        )))}
+        <text x="140" y="22" textAnchor="middle" fill="#7c3aed" fontSize="14" fontWeight="bold">5 cm (length)</text>
+        <text x="258" y="95" fill="#7c3aed" fontSize="13" fontWeight="bold">3 cm</text>
+        <text x="258" y="108" fill="#7c3aed" fontSize="13" fontWeight="bold">(width)</text>
+        <text x="140" y="100" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" style={{textShadow:'1px 1px 2px rgba(0,0,0,0.5)'}}>15 squares</text>
+        <text x="160" y="175" textAnchor="middle" fill="#5b21b6" fontSize="15" fontWeight="bold">Area = l × w = 5 × 3 = 15 cm²</text>
+        <text x="160" y="200" textAnchor="middle" fill="#7c3aed" fontSize="13">Square: Area = side × side</text>
+      </svg>
+    ),
+    area_triangle: (
+      <svg viewBox="0 0 340 230" className="w-full max-w-md mx-auto">
+        <rect x="40" y="30" width="200" height="140" fill="#fee2e2" stroke="#ef4444" strokeWidth="1" strokeDasharray="5,5" opacity="0.5"/>
+        <polygon points="40,170 240,170 140,30" fill="#fecaca" stroke="#ef4444" strokeWidth="3"/>
+        <line x1="140" y1="30" x2="140" y2="170" stroke="#6b7280" strokeWidth="1.5" strokeDasharray="4,4"/>
+        <text x="140" y="190" textAnchor="middle" fill="#ef4444" fontSize="14" fontWeight="bold">base (b)</text>
+        <text x="155" y="105" fill="#6b7280" fontSize="12" fontWeight="bold">height (h)</text>
+        <text x="275" y="80" fill="#b91c1c" fontSize="14" fontWeight="bold">Area =</text>
+        <text x="275" y="100" fill="#b91c1c" fontSize="14" fontWeight="bold">½ × b × h</text>
+        <text x="275" y="130" fill="#6b7280" fontSize="11">Triangle = </text>
+        <text x="275" y="145" fill="#6b7280" fontSize="11">½ rectangle</text>
+      </svg>
+    ),
+    perimeter_vs_area: (
+      <svg viewBox="0 0 400 200" className="w-full max-w-lg mx-auto">
+        <rect x="20" y="30" width="160" height="140" fill="none" stroke="#f59e0b" strokeWidth="4" strokeDasharray="10,5" rx="3">
+          <animate attributeName="stroke-dashoffset" from="0" to="-30" dur="2s" repeatCount="indefinite"/>
+        </rect>
+        <text x="100" y="22" textAnchor="middle" fill="#d97706" fontSize="14" fontWeight="bold">PERIMETER</text>
+        <text x="100" y="90" textAnchor="middle" fill="#92400e" fontSize="12">🔶 Around the edge</text>
+        <text x="100" y="110" textAnchor="middle" fill="#92400e" fontSize="12">🔶 Fence, frame, border</text>
+        <text x="100" y="130" textAnchor="middle" fill="#92400e" fontSize="12">🔶 Units: cm, m</text>
+        <rect x="220" y="30" width="160" height="140" fill="#bfdbfe" stroke="#3b82f6" strokeWidth="3" rx="3"/>
+        <text x="300" y="22" textAnchor="middle" fill="#1d4ed8" fontSize="14" fontWeight="bold">AREA</text>
+        <text x="300" y="90" textAnchor="middle" fill="#1e3a5f" fontSize="12">🔷 Surface inside</text>
+        <text x="300" y="110" textAnchor="middle" fill="#1e3a5f" fontSize="12">🔷 Paint, tile, carpet</text>
+        <text x="300" y="130" textAnchor="middle" fill="#1e3a5f" fontSize="12">🔷 Units: cm², m²</text>
+        <text x="200" y="195" textAnchor="middle" fill="#6b7280" fontSize="13" fontWeight="bold">Edge → P | Surface → A</text>
+      </svg>
+    ),
+    word_problems: (
+      <svg viewBox="0 0 340 180" className="w-full max-w-md mx-auto">
+        <rect x="20" y="20" width="300" height="140" fill="#f0fdf4" stroke="#22c55e" strokeWidth="2" rx="8"/>
+        <text x="170" y="45" textAnchor="middle" fill="#15803d" fontSize="14" fontWeight="bold">Problem-Solving Steps</text>
+        <text x="40" y="70" fill="#166534" fontSize="13">1️⃣ READ — What is asked?</text>
+        <text x="40" y="92" fill="#166534" fontSize="13">2️⃣ IDENTIFY — Perimeter or Area?</text>
+        <text x="40" y="114" fill="#166534" fontSize="13">3️⃣ CALCULATE — Apply formula</text>
+        <text x="40" y="136" fill="#166534" fontSize="13">4️⃣ EXTEND — Multiply by rate if needed</text>
+      </svg>
+    ),
+    missing_dimensions: (
+      <svg viewBox="0 0 340 200" className="w-full max-w-md mx-auto">
+        <rect x="30" y="30" width="180" height="120" fill="#fef9c3" stroke="#eab308" strokeWidth="3" rx="2"/>
+        <text x="120" y="22" textAnchor="middle" fill="#a16207" fontSize="13" fontWeight="bold">P = 36 m</text>
+        <text x="120" y="180" textAnchor="middle" fill="#a16207" fontSize="13" fontWeight="bold">? (find length)</text>
+        <text x="225" y="95" fill="#a16207" fontSize="13" fontWeight="bold">w = 7 m</text>
+        <text x="120" y="85" textAnchor="middle" fill="#92400e" fontSize="13" fontWeight="bold">l + w = P ÷ 2</text>
+        <text x="120" y="105" textAnchor="middle" fill="#92400e" fontSize="13" fontWeight="bold">l = (P÷2) - w</text>
+        <text x="120" y="125" textAnchor="middle" fill="#92400e" fontSize="12">= 18 - 7 = 11 m</text>
+        <rect x="260" y="50" width="60" height="60" fill="#fef9c3" stroke="#eab308" strokeWidth="2"/>
+        <text x="290" y="85" textAnchor="middle" fill="#92400e" fontSize="11" fontWeight="bold">A=64</text>
+        <text x="290" y="130" textAnchor="middle" fill="#92400e" fontSize="11">s=√64=8</text>
+      </svg>
+    )
+  };
+  return visuals[type] || null;
+};
 
-// =======================
-// LOAD QUESTION
-// =======================
-function loadQuestion() {
-  let q = questions[current];
-  document.getElementById("question").innerText = q.question;
+// ═══════════════════════════════════════════════════════════════
+// MAIN APP COMPONENT
+// ═══════════════════════════════════════════════════════════════
 
-  let optionsHTML = "";
-  q.options.forEach(opt => {
-    optionsHTML += `<div class="option">
-      <input type="radio" name="option" value="${opt}" onclick="selectOption('${opt}')"> ${opt}
-    </div>`;
+const KC_ORDER = ["KC-1","KC-2","KC-3","KC-4","KC-5","KC-6","KC-7","KC-8","KC-9","KC-10"];
+
+export default function ITSApp() {
+  // --- Global State ---
+  const [screen, setScreen] = useState("welcome"); // welcome | dashboard | learn | quiz | complete
+  const [studentName, setStudentName] = useState("");
+  const [studentId, setStudentId] = useState("");
+  const [sessionLogs, setSessionLogs] = useState([]);
+
+  // --- Learner Model ---
+  const [mastery, setMastery] = useState(() => {
+    const m = {};
+    KC_ORDER.forEach(kc => { m[kc] = KC_DATA[kc].startMastery; });
+    return m;
+  });
+  const [attempts, setAttempts] = useState(() => {
+    const a = {};
+    KC_ORDER.forEach(kc => { a[kc] = { total: 0, correct: 0, hintsUsed: 0, streakIncorrect: 0, remedialShown: false }; });
+    return a;
   });
 
-  document.getElementById("options").innerHTML = optionsHTML;
-  document.getElementById("hint").innerText = "";
-  document.getElementById("feedback").innerText = "";
+  // --- Current KC state ---
+  const [currentKC, setCurrentKC] = useState(null);
+  const [phase, setPhase] = useState("hook"); // hook | explain | misconception | quiz
+  const [currentQIndex, setCurrentQIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState(null);
+  const [answerState, setAnswerState] = useState(null); // null | correct | wrong
+  const [hintsRevealed, setHintsRevealed] = useState(0);
+  const [showRemedial, setShowRemedial] = useState(false);
+  const [questionStartTime, setQuestionStartTime] = useState(null);
+  const [showWorkedExample, setShowWorkedExample] = useState(false);
+  const [questionsAnswered, setQuestionsAnswered] = useState({});
+  const [animateIn, setAnimateIn] = useState(false);
 
-  hintLevel = 0;
-  selected = null;
-}
+  // trigger entry animation
+  useEffect(() => {
+    setAnimateIn(false);
+    const t = setTimeout(() => setAnimateIn(true), 50);
+    return () => clearTimeout(t);
+  }, [screen, phase, currentQIndex, currentKC]);
 
-// =======================
-// SELECT OPTION
-// =======================
-function selectOption(opt) {
-  selected = opt;
-}
+  // ── BKT Mastery Update ──
+  const updateMastery = (kc, isCorrect) => {
+    setMastery(prev => {
+      const old = prev[kc];
+      const newVal = isCorrect
+        ? old + (1 - old) * 0.30
+        : old * 0.75;
+      return { ...prev, [kc]: Math.round(newVal * 1000) / 1000 };
+    });
+  };
 
-// =======================
-// SUBMIT ANSWER
-// =======================
-function submitAnswer() {
-  if (!selected) {
-    alert("Select an option");
-    return;
+  // ── Check if KC is unlocked ──
+  const isUnlocked = (kcId) => {
+    const kc = KC_DATA[kcId];
+    if (kc.prerequisites.length === 0) return true;
+    return kc.prerequisites.every(pre => mastery[pre] >= 0.40);
+  };
+
+  const getMasteryLabel = (val) => {
+    if (val >= 0.70) return { text: "Mastered ✓", color: "#22c55e", bg: "#f0fdf4" };
+    if (val >= 0.40) return { text: "Developing", color: "#f59e0b", bg: "#fffbeb" };
+    return { text: "Not Started", color: "#94a3b8", bg: "#f8fafc" };
+  };
+
+  const allMastered = KC_ORDER.every(kc => mastery[kc] >= 0.70);
+
+  // ── Determine difficulty of next question ──
+  const getQuestionDifficulty = (kcId) => {
+    const m = mastery[kcId];
+    if (m < 0.40) return "easy";
+    if (m < 0.70) return "medium";
+    return "hard";
+  };
+
+  // ── Get adaptive question ──
+  const getNextQuestion = (kcId, qIdx) => {
+    const questions = KC_DATA[kcId].questions;
+    const targetDiff = getQuestionDifficulty(kcId);
+    const answered = questionsAnswered[kcId] || new Set();
+
+    // Find unanswered question matching target difficulty
+    let q = questions.find((q, i) => q.difficulty === targetDiff && !answered.has(i));
+    // If no matching difficulty, find any unanswered
+    if (!q) q = questions.find((q, i) => !answered.has(i));
+    // If all answered, pick by difficulty
+    if (!q) q = questions.find(q => q.difficulty === targetDiff) || questions[qIdx % questions.length];
+    return { question: q, index: questions.indexOf(q) };
+  };
+
+  // ── Start a KC ──
+  const startKC = (kcId) => {
+    setCurrentKC(kcId);
+    setPhase("hook");
+    setCurrentQIndex(0);
+    setSelectedAnswer(null);
+    setAnswerState(null);
+    setHintsRevealed(0);
+    setShowRemedial(false);
+    setShowWorkedExample(false);
+    setScreen("learn");
+  };
+
+  // ── Submit Answer ──
+  const submitAnswer = () => {
+    if (selectedAnswer === null) return;
+    const kc = KC_DATA[currentKC];
+    const { question: q, index: qIdx } = getNextQuestion(currentKC, currentQIndex);
+    const isCorrect = selectedAnswer === q.correct;
+    const timeTaken = questionStartTime ? Math.floor((Date.now() - questionStartTime) / 1000) : 0;
+
+    // Update mastery
+    updateMastery(currentKC, isCorrect);
+
+    // Update attempts
+    setAttempts(prev => {
+      const a = { ...prev[currentKC] };
+      a.total += 1;
+      if (isCorrect) {
+        a.correct += 1;
+        a.streakIncorrect = 0;
+      } else {
+        a.streakIncorrect += 1;
+      }
+      a.hintsUsed += hintsRevealed;
+      return { ...prev, [currentKC]: a };
+    });
+
+    // Mark question as answered
+    setQuestionsAnswered(prev => {
+      const s = new Set(prev[currentKC] || []);
+      s.add(qIdx);
+      return { ...prev, [currentKC]: s };
+    });
+
+    // Log session data
+    const log = {
+      session_id: `SESSION_${Date.now()}`,
+      student_id: studentId,
+      timestamp: new Date().toISOString(),
+      chapter_id: "PA",
+      chapter_name: "Perimeter and Area",
+      subtopic_id: currentKC,
+      subtopic_name: kc.name,
+      concept: q.question,
+      time_spent_seconds: timeTaken,
+      is_correct: isCorrect,
+      hints_used: hintsRevealed,
+      difficulty: q.difficulty,
+      kc_mastery: mastery[currentKC]
+    };
+    setSessionLogs(prev => [...prev, log]);
+
+    setAnswerState(isCorrect ? "correct" : "wrong");
+
+    // Check for remedial trigger (2 wrong in a row)
+    if (!isCorrect) {
+      const newStreak = (attempts[currentKC]?.streakIncorrect || 0) + 1;
+      if (newStreak >= 2) {
+        setTimeout(() => setShowRemedial(true), 1500);
+      }
+      if (hintsRevealed >= 3) {
+        setTimeout(() => setShowWorkedExample(true), 1500);
+      }
+    }
+  };
+
+  // ── Next Question ──
+  const nextQuestion = () => {
+    const kc = KC_DATA[currentKC];
+    const answered = questionsAnswered[currentKC]?.size || 0;
+
+    // Check mastery
+    if (mastery[currentKC] >= 0.70) {
+      setScreen("dashboard");
+      setCurrentKC(null);
+      return;
+    }
+
+    // If all questions answered, loop
+    if (answered >= kc.questions.length) {
+      setQuestionsAnswered(prev => ({ ...prev, [currentKC]: new Set() }));
+    }
+
+    setCurrentQIndex(prev => prev + 1);
+    setSelectedAnswer(null);
+    setAnswerState(null);
+    setHintsRevealed(0);
+    setShowRemedial(false);
+    setShowWorkedExample(false);
+    setQuestionStartTime(Date.now());
+  };
+
+  // ═══════════════════════════════════════════════════════════════
+  // RENDER
+  // ═══════════════════════════════════════════════════════════════
+
+  // --- WELCOME SCREEN ---
+  if (screen === "welcome") {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4" style={{background:'linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)'}}>
+        <div className={`w-full max-w-lg transition-all duration-700 ${animateIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          <div className="text-center mb-8">
+            <div className="text-6xl mb-4">📐</div>
+            <h1 className="text-4xl font-bold mb-2" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>
+              Perimeter & Area
+            </h1>
+            <p className="text-lg" style={{color:'#94a3b8'}}>Intelligent Tutoring System — Grade 6</p>
+            <div className="mt-2 inline-block px-3 py-1 rounded-full text-xs font-semibold" style={{background:'#1e3a5f', color:'#60a5fa'}}>
+              Adaptive Learning
+            </div>
+          </div>
+
+          <div className="rounded-2xl p-8 shadow-2xl" style={{background:'#1e293b', border:'1px solid #334155'}}>
+            <label className="block text-sm font-medium mb-2" style={{color:'#cbd5e1'}}>What's your name?</label>
+            <input
+              type="text"
+              value={studentName}
+              onChange={e => setStudentName(e.target.value)}
+              placeholder="Enter your name..."
+              className="w-full p-4 rounded-xl text-lg mb-6 outline-none transition-all focus:ring-2"
+              style={{background:'#0f172a', color:'#f8fafc', border:'1px solid #475569', focusRing:'#3b82f6'}}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && studentName.trim()) {
+                  setStudentId(`STU_${Date.now()}`);
+                  setScreen("dashboard");
+                }
+              }}
+            />
+            <button
+              onClick={() => {
+                if (studentName.trim()) {
+                  setStudentId(`STU_${Date.now()}`);
+                  setScreen("dashboard");
+                }
+              }}
+              disabled={!studentName.trim()}
+              className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+              style={{
+                background: studentName.trim() ? 'linear-gradient(135deg,#3b82f6,#8b5cf6)' : '#334155',
+                color: studentName.trim() ? '#fff' : '#64748b',
+                cursor: studentName.trim() ? 'pointer' : 'not-allowed'
+              }}
+            >
+              Start Learning →
+            </button>
+          </div>
+          <p className="text-center mt-4 text-xs" style={{color:'#475569'}}>Chapter: Perimeter and Area | Team GAP</p>
+        </div>
+      </div>
+    );
   }
 
-  let q = questions[current];
+  // --- DASHBOARD ---
+  if (screen === "dashboard") {
+    return (
+      <div className="min-h-screen p-4" style={{background:'linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)'}}>
+        <div className={`max-w-4xl mx-auto transition-all duration-700 ${animateIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>
+                📐 Perimeter & Area
+              </h1>
+              <p style={{color:'#94a3b8'}}>Welcome, <span style={{color:'#60a5fa'}}>{studentName}</span>!</p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm" style={{color:'#94a3b8'}}>Overall Progress</div>
+              <div className="text-2xl font-bold" style={{color:'#22c55e'}}>
+                {KC_ORDER.filter(kc => mastery[kc] >= 0.70).length}/10 Mastered
+              </div>
+            </div>
+          </div>
 
-  if (selected === q.correct) {
-    correct++;
-    document.getElementById("feedback").innerText = "✅ Correct!";
-    nextQuestion();
-  } else {
-    wrong++;
-    document.getElementById("feedback").innerText = "❌ Wrong!";
+          {/* Progress bar */}
+          <div className="rounded-full h-3 mb-8" style={{background:'#334155'}}>
+            <div
+              className="rounded-full h-3 transition-all duration-1000"
+              style={{
+                width: `${(KC_ORDER.filter(kc => mastery[kc] >= 0.70).length / 10) * 100}%`,
+                background: 'linear-gradient(90deg,#22c55e,#3b82f6)'
+              }}
+            />
+          </div>
+
+          {allMastered && (
+            <div className="rounded-2xl p-6 mb-6 text-center" style={{background:'linear-gradient(135deg,#14532d,#166534)', border:'1px solid #22c55e'}}>
+              <div className="text-4xl mb-2">🏆</div>
+              <h2 className="text-xl font-bold" style={{color:'#f0fdf4'}}>Chapter Complete!</h2>
+              <p style={{color:'#bbf7d0'}}>You've mastered all 10 knowledge components. Amazing work, {studentName}!</p>
+            </div>
+          )}
+
+          {/* KC Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {KC_ORDER.map((kcId, idx) => {
+              const kc = KC_DATA[kcId];
+              const m = mastery[kcId];
+              const label = getMasteryLabel(m);
+              const unlocked = isUnlocked(kcId);
+              const isMastered = m >= 0.70;
+              const att = attempts[kcId];
+
+              return (
+                <div
+                  key={kcId}
+                  className="rounded-xl p-5 transition-all duration-300"
+                  style={{
+                    background: unlocked ? '#1e293b' : '#0f172a',
+                    border: `1px solid ${isMastered ? '#22c55e' : unlocked ? '#334155' : '#1e293b'}`,
+                    opacity: unlocked ? 1 : 0.5,
+                    cursor: unlocked ? 'pointer' : 'not-allowed'
+                  }}
+                  onClick={() => unlocked && startKC(kcId)}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{kc.hook.emoji}</span>
+                      <div>
+                        <div className="text-xs font-mono" style={{color:'#64748b'}}>{kcId}</div>
+                        <div className="font-bold" style={{color: unlocked ? '#f8fafc' : '#475569', fontFamily:'Georgia, serif'}}>
+                          {kc.name}
+                        </div>
+                      </div>
+                    </div>
+                    <span
+                      className="text-xs font-semibold px-2 py-1 rounded-full"
+                      style={{color: label.color, background: unlocked ? label.bg : 'transparent', opacity: unlocked ? 1 : 0.5}}
+                    >
+                      {unlocked ? label.text : "🔒 Locked"}
+                    </span>
+                  </div>
+
+                  {unlocked && (
+                    <>
+                      <div className="rounded-full h-2 mb-2" style={{background:'#0f172a'}}>
+                        <div
+                          className="rounded-full h-2 transition-all duration-700"
+                          style={{
+                            width: `${Math.min(m / 0.70 * 100, 100)}%`,
+                            background: isMastered ? '#22c55e' : m >= 0.40 ? '#f59e0b' : '#64748b'
+                          }}
+                        />
+                      </div>
+                      <div className="flex justify-between text-xs" style={{color:'#64748b'}}>
+                        <span>Mastery: {Math.round(m * 100)}%</span>
+                        <span>{att.total > 0 ? `${att.correct}/${att.total} correct` : 'Not attempted'}</span>
+                      </div>
+                    </>
+                  )}
+
+                  {!unlocked && (
+                    <div className="text-xs mt-1" style={{color:'#475569'}}>
+                      Requires: {kc.prerequisites.map(p => KC_DATA[p].name).join(" & ")}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Session Log Summary */}
+          {sessionLogs.length > 0 && (
+            <div className="mt-8 rounded-xl p-5" style={{background:'#1e293b', border:'1px solid #334155'}}>
+              <h3 className="font-bold mb-3" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>📊 Session Log ({sessionLogs.length} interactions)</h3>
+              <div className="overflow-x-auto">
+                <div className="grid gap-2 text-xs" style={{color:'#94a3b8'}}>
+                  {sessionLogs.slice(-5).map((log, i) => (
+                    <div key={i} className="flex items-center gap-3 p-2 rounded" style={{background:'#0f172a'}}>
+                      <span style={{color: log.is_correct ? '#22c55e' : '#ef4444'}}>{log.is_correct ? '✓' : '✗'}</span>
+                      <span className="font-mono">{log.subtopic_id}</span>
+                      <span className="flex-1 truncate">{log.concept}</span>
+                      <span>{log.time_spent_seconds}s</span>
+                      <span>Hints: {log.hints_used}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   }
-}
 
-// =======================
-// HINT SYSTEM
-// =======================
-function showHint() {
-  let q = questions[current];
+  // --- LEARNING SCREEN ---
+  if (screen === "learn" && currentKC) {
+    const kc = KC_DATA[currentKC];
+    const m = mastery[currentKC];
+    const label = getMasteryLabel(m);
 
-  if (hintLevel < q.hints.length) {
-    document.getElementById("hint").innerText = q.hints[hintLevel];
-    hintLevel++;
-    hintsUsed++;
-  } else {
-    document.getElementById("hint").innerText = "No more hints!";
+    return (
+      <div className="min-h-screen p-4" style={{background:'linear-gradient(135deg,#0f172a 0%,#1e293b 50%,#0f172a 100%)'}}>
+        <div className={`max-w-3xl mx-auto transition-all duration-700 ${animateIn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+          {/* Top bar */}
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => { setScreen("dashboard"); setCurrentKC(null); }}
+              className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+              style={{background:'#334155', color:'#94a3b8'}}
+            >
+              ← Dashboard
+            </button>
+            <div className="flex items-center gap-3">
+              <span className="text-sm" style={{color:'#94a3b8'}}>Mastery: <span style={{color: label.color}}>{Math.round(m*100)}%</span></span>
+              <div className="w-20 rounded-full h-2" style={{background:'#334155'}}>
+                <div className="rounded-full h-2 transition-all duration-500" style={{width:`${Math.min(m/0.70*100,100)}%`, background: label.color}}/>
+              </div>
+            </div>
+          </div>
+
+          {/* Phase indicator */}
+          <div className="flex gap-2 mb-6">
+            {["hook","explain","misconception","quiz"].map((p, i) => (
+              <div key={p} className="flex-1 h-1 rounded-full transition-all" style={{
+                background: p === phase ? '#3b82f6' : ["hook","explain","misconception","quiz"].indexOf(phase) > i ? '#22c55e' : '#334155'
+              }}/>
+            ))}
+          </div>
+
+          <div className="text-xs font-semibold mb-1" style={{color:'#64748b'}}>{currentKC} · {kc.name}</div>
+
+          {/* ── HOOK PHASE ── */}
+          {phase === "hook" && (
+            <div className="rounded-2xl p-8" style={{background:'#1e293b', border:'1px solid #334155'}}>
+              <div className="text-5xl mb-4 text-center">{kc.hook.emoji}</div>
+              <h2 className="text-2xl font-bold mb-4 text-center" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>
+                {kc.hook.character}'s Story
+              </h2>
+              <div className="text-lg leading-relaxed mb-8" style={{color:'#cbd5e1'}}>
+                {kc.hook.story}
+              </div>
+              <button
+                onClick={() => setPhase("explain")}
+                className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+                style={{background:'linear-gradient(135deg,#3b82f6,#6366f1)', color:'#fff'}}
+              >
+                Let's Learn! →
+              </button>
+            </div>
+          )}
+
+          {/* ── EXPLAIN PHASE ── */}
+          {phase === "explain" && (
+            <div className="rounded-2xl p-8" style={{background:'#1e293b', border:'1px solid #334155'}}>
+              <h2 className="text-2xl font-bold mb-6" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>
+                {kc.explain.title}
+              </h2>
+
+              {/* Visual */}
+              <div className="mb-6 p-4 rounded-xl" style={{background:'#0f172a'}}>
+                <ShapeVisual type={kc.explain.visual} />
+              </div>
+
+              {/* Explanation points */}
+              <div className="space-y-4 mb-6">
+                {kc.explain.points.map((point, i) => (
+                  <div key={i} className="flex gap-3 items-start">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{background:'#1e3a5f', color:'#60a5fa'}}>
+                      {i + 1}
+                    </div>
+                    <p className="text-base leading-relaxed" style={{color:'#e2e8f0'}}>{point}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Real life examples */}
+              <div className="rounded-xl p-4 mb-6" style={{background:'#0f172a', border:'1px solid #1e3a5f'}}>
+                <div className="text-sm font-semibold mb-2" style={{color:'#60a5fa'}}>🌍 Real-life uses:</div>
+                <div className="flex flex-wrap gap-2">
+                  {kc.explain.realLife.map((ex, i) => (
+                    <span key={i} className="px-3 py-1 rounded-full text-xs font-medium" style={{background:'#1e293b', color:'#94a3b8'}}>
+                      {ex}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setPhase("misconception")}
+                className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+                style={{background:'linear-gradient(135deg,#f59e0b,#ef4444)', color:'#fff'}}
+              >
+                ⚠️ Common Mistakes to Avoid →
+              </button>
+            </div>
+          )}
+
+          {/* ── MISCONCEPTION PHASE ── */}
+          {phase === "misconception" && (
+            <div className="rounded-2xl p-8" style={{background:'#1e293b', border:'1px solid #334155'}}>
+              <h2 className="text-2xl font-bold mb-6" style={{color:'#f8fafc', fontFamily:'Georgia, serif'}}>
+                ⚠️ Watch Out!
+              </h2>
+
+              {/* Wrong way */}
+              <div className="rounded-xl p-5 mb-4" style={{background:'#450a0a', border:'1px solid #dc2626'}}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">❌</span>
+                  <span className="font-bold" style={{color:'#fca5a5'}}>Common Mistake:</span>
+                </div>
+                <p style={{color:'#fecaca'}}>{kc.misconception.wrong}</p>
+              </div>
+
+              {/* Correct way */}
+              <div className="rounded-xl p-5 mb-8" style={{background:'#052e16', border:'1px solid #22c55e'}}>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xl">✅</span>
+                  <span className="font-bold" style={{color:'#86efac'}}>The Right Way:</span>
+                </div>
+                <p style={{color:'#bbf7d0'}}>{kc.misconception.correct}</p>
+              </div>
+
+              <button
+                onClick={() => { setPhase("quiz"); setQuestionStartTime(Date.now()); }}
+                className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+                style={{background:'linear-gradient(135deg,#22c55e,#14b8a6)', color:'#fff'}}
+              >
+                Ready to Practice! →
+              </button>
+            </div>
+          )}
+
+          {/* ── QUIZ PHASE ── */}
+          {phase === "quiz" && (() => {
+            const { question: q, index: qIdx } = getNextQuestion(currentKC, currentQIndex);
+            if (!q) return null;
+            const diffColors = { easy: '#22c55e', medium: '#f59e0b', hard: '#ef4444' };
+
+            return (
+              <div className="rounded-2xl p-8" style={{background:'#1e293b', border:'1px solid #334155'}}>
+                {/* Question header */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold" style={{background: `${diffColors[q.difficulty]}20`, color: diffColors[q.difficulty]}}>
+                    {q.difficulty.toUpperCase()}
+                  </span>
+                  <span className="text-sm" style={{color:'#64748b'}}>
+                    Q{currentQIndex + 1} · Streak: {attempts[currentKC]?.streakIncorrect || 0} wrong
+                  </span>
+                </div>
+
+                {/* Question */}
+                <h3 className="text-xl font-bold mb-6 leading-relaxed" style={{color:'#f8fafc'}}>
+                  {q.question}
+                </h3>
+
+                {/* Options */}
+                <div className="space-y-3 mb-6">
+                  {q.options.map((opt, i) => {
+                    let bg = '#0f172a';
+                    let border = '#334155';
+                    let textColor = '#e2e8f0';
+
+                    if (answerState && i === q.correct) {
+                      bg = '#052e16'; border = '#22c55e'; textColor = '#86efac';
+                    } else if (answerState === "wrong" && i === selectedAnswer) {
+                      bg = '#450a0a'; border = '#dc2626'; textColor = '#fca5a5';
+                    } else if (selectedAnswer === i && !answerState) {
+                      bg = '#1e3a5f'; border = '#3b82f6'; textColor = '#93c5fd';
+                    }
+
+                    return (
+                      <button
+                        key={i}
+                        onClick={() => !answerState && setSelectedAnswer(i)}
+                        disabled={!!answerState}
+                        className="w-full text-left p-4 rounded-xl transition-all flex items-center gap-3"
+                        style={{background: bg, border: `2px solid ${border}`, color: textColor}}
+                      >
+                        <span className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold" style={{background: border, color: bg}}>
+                          {String.fromCharCode(65 + i)}
+                        </span>
+                        <span className="text-base">{opt}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Hints */}
+                {!answerState && (
+                  <div className="mb-4">
+                    {hintsRevealed > 0 && (
+                      <div className="space-y-2 mb-3">
+                        {q.hints.slice(0, hintsRevealed).map((hint, i) => (
+                          <div key={i} className="rounded-lg p-3 text-sm" style={{background:'#1e3a5f', border:'1px solid #2563eb', color:'#93c5fd'}}>
+                            <span className="font-bold">
+                              {i === 0 ? "💡 Concept Hint: " : i === 1 ? "🧩 Strategy Hint: " : "📝 Formula Hint: "}
+                            </span>
+                            {hint}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {hintsRevealed < 3 && (
+                      <button
+                        onClick={() => setHintsRevealed(prev => prev + 1)}
+                        className="text-sm font-semibold px-4 py-2 rounded-lg transition-all"
+                        style={{background:'#1e3a5f', color:'#60a5fa'}}
+                      >
+                        💡 Need a hint? ({3 - hintsRevealed} remaining)
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {/* Feedback */}
+                {answerState === "correct" && (
+                  <div className="rounded-xl p-4 mb-4" style={{background:'#052e16', border:'1px solid #22c55e'}}>
+                    <div className="text-lg font-bold" style={{color:'#86efac'}}>🎉 Correct! Well done!</div>
+                    <div className="text-sm mt-1" style={{color:'#bbf7d0'}}>Mastery updated to {Math.round(mastery[currentKC]*100)}%</div>
+                  </div>
+                )}
+
+                {answerState === "wrong" && (
+                  <div className="rounded-xl p-4 mb-4" style={{background:'#450a0a', border:'1px solid #dc2626'}}>
+                    <div className="text-lg font-bold" style={{color:'#fca5a5'}}>Not quite! The correct answer is highlighted in green.</div>
+                    {showRemedial && (
+                      <div className="mt-3 p-3 rounded-lg" style={{background:'#1e293b', border:'1px solid #f59e0b'}}>
+                        <div className="text-sm font-bold mb-1" style={{color:'#fbbf24'}}>📖 Remedial — Let's review:</div>
+                        <p className="text-sm" style={{color:'#fde68a'}}>{q.remedial}</p>
+                      </div>
+                    )}
+                    {showWorkedExample && (
+                      <div className="mt-3 p-3 rounded-lg" style={{background:'#1e293b', border:'1px solid #8b5cf6'}}>
+                        <div className="text-sm font-bold mb-1" style={{color:'#a78bfa'}}>📋 Full Worked Example:</div>
+                        <p className="text-sm" style={{color:'#c4b5fd'}}>{q.remedial}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                {!answerState ? (
+                  <button
+                    onClick={submitAnswer}
+                    disabled={selectedAnswer === null}
+                    className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+                    style={{
+                      background: selectedAnswer !== null ? 'linear-gradient(135deg,#3b82f6,#6366f1)' : '#334155',
+                      color: selectedAnswer !== null ? '#fff' : '#64748b',
+                      cursor: selectedAnswer !== null ? 'pointer' : 'not-allowed'
+                    }}
+                  >
+                    Submit Answer
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (mastery[currentKC] >= 0.70) {
+                        setScreen("dashboard");
+                        setCurrentKC(null);
+                      } else {
+                        nextQuestion();
+                      }
+                    }}
+                    className="w-full py-4 rounded-xl text-lg font-bold transition-all"
+                    style={{background:'linear-gradient(135deg,#3b82f6,#6366f1)', color:'#fff'}}
+                  >
+                    {mastery[currentKC] >= 0.70 ? "🎉 KC Mastered! Back to Dashboard" : "Next Question →"}
+                  </button>
+                )}
+              </div>
+            );
+          })()}
+        </div>
+      </div>
+    );
   }
+
+  return null;
 }
-
-// =======================
-// NEXT QUESTION
-// =======================
-function nextQuestion() {
-  current++;
-
-  if (current < questions.length) {
-    setTimeout(loadQuestion, 500);
-  } else {
-    endSession();
-  }
-}
-
-// =======================
-// END SESSION
-// =======================
-function endSession() {
-  let timeSpent = Math.floor((Date.now() - startTime) / 1000);
-
-  document.getElementById("quiz").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
-
-  document.getElementById("summary").innerText = `
-    Correct: ${correct}
-    Wrong: ${wrong}
-    Hints Used: ${hintsUsed}
-    Time Spent: ${timeSpent} sec
-    Accuracy: ${(correct / (correct + wrong)).toFixed(2)}
-  `;
-}
-
-// =======================
-loadQuestion();
-// =======================
-
-</script>
-
-</body>
-</html>
